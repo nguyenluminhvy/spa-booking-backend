@@ -8,10 +8,31 @@ import { ServicesModule } from './services/services.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/roles.guard';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, ServicesModule, AppointmentsModule, ReviewsModule, NotificationsModule],
+  imports: [
+    PrismaModule,
+    UsersModule,
+    AuthModule,
+    ServicesModule,
+    AppointmentsModule,
+    ReviewsModule,
+    NotificationsModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}

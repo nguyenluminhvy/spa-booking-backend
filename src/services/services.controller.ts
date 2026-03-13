@@ -8,11 +8,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('services')
 export class ServicesController {
   constructor(private readonly servicesService: ServicesService) {}
 
+  @Roles('ADMIN')
   @Post()
   create(@Body() body: any) {
     return this.servicesService.create(body);
