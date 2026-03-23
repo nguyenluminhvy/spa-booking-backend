@@ -103,6 +103,7 @@ export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeo
 export const AppointmentScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  staffId: 'staffId',
   serviceId: 'serviceId',
   appointmentDate: 'appointmentDate',
   appointmentTime: 'appointmentTime',

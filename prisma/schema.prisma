@@ -8,17 +8,24 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  STAFF
+  ADMIN
+}
+
 model User {
-  id            Int            @id @default(autoincrement())
-  name          String?
-  email         String         @unique
-  password      String
-  phone         String?
-  role          String         @default("USER")
-  createdAt     DateTime       @default(now())
-  appointments  Appointment[]
-  notifications Notification[]
-  reviews       Review[]
+  id                Int            @id @default(autoincrement())
+  name              String?
+  email             String         @unique
+  password          String
+  phone             String?
+  role              Role           @default(USER)
+  createdAt         DateTime       @default(now())
+  appointments      Appointment[]  @relation("UserAppointments")
+  staffAppointments Appointment[]  @relation("StaffAppointments")
+  notifications     Notification[]
+  reviews           Review[]
 
   @@map("users")
 }
@@ -38,15 +45,18 @@ model Service {
 }
 
 model Appointment {
-  id              Int      @id @default(autoincrement())
-  userId          Int
+  id      Int  @id @default(autoincrement())
+  userId  Int
+  staffId Int?
+
   serviceId       Int
   appointmentDate DateTime
   appointmentTime DateTime
   status          String
   createdAt       DateTime @default(now())
   service         Service  @relation(fields: [serviceId], references: [id])
-  user            User     @relation(fields: [userId], references: [id])
+  user            User     @relation("UserAppointments", fields: [userId], references: [id])
+  staff           User?    @relation("StaffAppointments", fields: [staffId], references: [id])
 
   @@map("appointments")
 }

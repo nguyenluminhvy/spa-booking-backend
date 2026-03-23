@@ -40,7 +40,7 @@ export type UserMinAggregateOutputType = {
   email: string | null
   password: string | null
   phone: string | null
-  role: string | null
+  role: $Enums.Role | null
   createdAt: Date | null
 }
 
@@ -50,7 +50,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   password: string | null
   phone: string | null
-  role: string | null
+  role: $Enums.Role | null
   createdAt: Date | null
 }
 
@@ -197,7 +197,7 @@ export type UserGroupByOutputType = {
   email: string
   password: string
   phone: string | null
-  role: string
+  role: $Enums.Role
   createdAt: Date
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
@@ -230,9 +230,10 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringNullableFilter<"User"> | string | null
-  role?: Prisma.StringFilter<"User"> | string
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   appointments?: Prisma.AppointmentListRelationFilter
+  staffAppointments?: Prisma.AppointmentListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
 }
@@ -246,6 +247,7 @@ export type UserOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   appointments?: Prisma.AppointmentOrderByRelationAggregateInput
+  staffAppointments?: Prisma.AppointmentOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
@@ -259,9 +261,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringNullableFilter<"User"> | string | null
-  role?: Prisma.StringFilter<"User"> | string
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   appointments?: Prisma.AppointmentListRelationFilter
+  staffAppointments?: Prisma.AppointmentListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
 }, "id" | "email">
@@ -290,7 +293,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  role?: Prisma.StringWithAggregatesFilter<"User"> | string
+  role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
@@ -299,9 +302,10 @@ export type UserCreateInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
   appointments?: Prisma.AppointmentCreateNestedManyWithoutUserInput
+  staffAppointments?: Prisma.AppointmentCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
 }
@@ -312,9 +316,10 @@ export type UserUncheckedCreateInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
+  staffAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
 }
@@ -324,9 +329,10 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
+  staffAppointments?: Prisma.AppointmentUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
 }
@@ -337,9 +343,10 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
+  staffAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -350,7 +357,7 @@ export type UserCreateManyInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
 }
 
@@ -359,7 +366,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -369,7 +376,7 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -416,12 +423,21 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type EnumRoleFieldUpdateOperationsInput = {
+  set?: $Enums.Role
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -442,12 +458,28 @@ export type UserCreateNestedOneWithoutAppointmentsInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
+export type UserCreateNestedOneWithoutStaffAppointmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStaffAppointmentsInput, Prisma.UserUncheckedCreateWithoutStaffAppointmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStaffAppointmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserUpdateOneRequiredWithoutAppointmentsNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAppointmentsInput, Prisma.UserUncheckedCreateWithoutAppointmentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAppointmentsInput
   upsert?: Prisma.UserUpsertWithoutAppointmentsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAppointmentsInput, Prisma.UserUpdateWithoutAppointmentsInput>, Prisma.UserUncheckedUpdateWithoutAppointmentsInput>
+}
+
+export type UserUpdateOneWithoutStaffAppointmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStaffAppointmentsInput, Prisma.UserUncheckedCreateWithoutStaffAppointmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStaffAppointmentsInput
+  upsert?: Prisma.UserUpsertWithoutStaffAppointmentsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStaffAppointmentsInput, Prisma.UserUpdateWithoutStaffAppointmentsInput>, Prisma.UserUncheckedUpdateWithoutStaffAppointmentsInput>
 }
 
 export type UserCreateNestedOneWithoutReviewsInput = {
@@ -483,8 +515,9 @@ export type UserCreateWithoutAppointmentsInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
+  staffAppointments?: Prisma.AppointmentCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
 }
@@ -495,8 +528,9 @@ export type UserUncheckedCreateWithoutAppointmentsInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
+  staffAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
 }
@@ -504,6 +538,36 @@ export type UserUncheckedCreateWithoutAppointmentsInput = {
 export type UserCreateOrConnectWithoutAppointmentsInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutAppointmentsInput, Prisma.UserUncheckedCreateWithoutAppointmentsInput>
+}
+
+export type UserCreateWithoutStaffAppointmentsInput = {
+  name?: string | null
+  email: string
+  password: string
+  phone?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  appointments?: Prisma.AppointmentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutStaffAppointmentsInput = {
+  id?: number
+  name?: string | null
+  email: string
+  password: string
+  phone?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutStaffAppointmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutStaffAppointmentsInput, Prisma.UserUncheckedCreateWithoutStaffAppointmentsInput>
 }
 
 export type UserUpsertWithoutAppointmentsInput = {
@@ -522,8 +586,9 @@ export type UserUpdateWithoutAppointmentsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  staffAppointments?: Prisma.AppointmentUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
 }
@@ -534,8 +599,45 @@ export type UserUncheckedUpdateWithoutAppointmentsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  staffAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutStaffNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutStaffAppointmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutStaffAppointmentsInput, Prisma.UserUncheckedUpdateWithoutStaffAppointmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutStaffAppointmentsInput, Prisma.UserUncheckedCreateWithoutStaffAppointmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutStaffAppointmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutStaffAppointmentsInput, Prisma.UserUncheckedUpdateWithoutStaffAppointmentsInput>
+}
+
+export type UserUpdateWithoutStaffAppointmentsInput = {
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  appointments?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutStaffAppointmentsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -545,9 +647,10 @@ export type UserCreateWithoutReviewsInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
   appointments?: Prisma.AppointmentCreateNestedManyWithoutUserInput
+  staffAppointments?: Prisma.AppointmentCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
@@ -557,9 +660,10 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
+  staffAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -584,9 +688,10 @@ export type UserUpdateWithoutReviewsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
+  staffAppointments?: Prisma.AppointmentUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
@@ -596,9 +701,10 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
+  staffAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -607,9 +713,10 @@ export type UserCreateWithoutNotificationsInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
   appointments?: Prisma.AppointmentCreateNestedManyWithoutUserInput
+  staffAppointments?: Prisma.AppointmentCreateNestedManyWithoutStaffInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
 }
 
@@ -619,9 +726,10 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   email: string
   password: string
   phone?: string | null
-  role?: string
+  role?: $Enums.Role
   createdAt?: Date | string
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
+  staffAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutStaffInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -646,9 +754,10 @@ export type UserUpdateWithoutNotificationsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
+  staffAppointments?: Prisma.AppointmentUpdateManyWithoutStaffNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
 }
 
@@ -658,9 +767,10 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
+  staffAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutStaffNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -671,12 +781,14 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
 
 export type UserCountOutputType = {
   appointments: number
+  staffAppointments: number
   notifications: number
   reviews: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appointments?: boolean | UserCountOutputTypeCountAppointmentsArgs
+  staffAppointments?: boolean | UserCountOutputTypeCountStaffAppointmentsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   reviews?: boolean | UserCountOutputTypeCountReviewsArgs
 }
@@ -695,6 +807,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
  * UserCountOutputType without action
  */
 export type UserCountOutputTypeCountAppointmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AppointmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountStaffAppointmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AppointmentWhereInput
 }
 
@@ -722,6 +841,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   role?: boolean
   createdAt?: boolean
   appointments?: boolean | Prisma.User$appointmentsArgs<ExtArgs>
+  staffAppointments?: boolean | Prisma.User$staffAppointmentsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -760,6 +880,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "phone" | "role" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appointments?: boolean | Prisma.User$appointmentsArgs<ExtArgs>
+  staffAppointments?: boolean | Prisma.User$staffAppointmentsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -771,6 +892,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     appointments: Prisma.$AppointmentPayload<ExtArgs>[]
+    staffAppointments: Prisma.$AppointmentPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
   }
@@ -780,7 +902,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     password: string
     phone: string | null
-    role: string
+    role: $Enums.Role
     createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -1177,6 +1299,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   appointments<T extends Prisma.User$appointmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  staffAppointments<T extends Prisma.User$staffAppointmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$staffAppointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.User$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1213,7 +1336,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
-  readonly role: Prisma.FieldRef<"User", 'String'>
+  readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
@@ -1606,6 +1729,30 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
  * User.appointments
  */
 export type User$appointmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Appointment
+   */
+  select?: Prisma.AppointmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Appointment
+   */
+  omit?: Prisma.AppointmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AppointmentInclude<ExtArgs> | null
+  where?: Prisma.AppointmentWhereInput
+  orderBy?: Prisma.AppointmentOrderByWithRelationInput | Prisma.AppointmentOrderByWithRelationInput[]
+  cursor?: Prisma.AppointmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AppointmentScalarFieldEnum | Prisma.AppointmentScalarFieldEnum[]
+}
+
+/**
+ * User.staffAppointments
+ */
+export type User$staffAppointmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Appointment
    */
