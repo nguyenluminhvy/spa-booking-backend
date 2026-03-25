@@ -11,6 +11,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/roles.guard';
+import { FirebaseModule } from './firebase/firebase.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RolesGuard } from './auth/roles.guard';
     AppointmentsModule,
     ReviewsModule,
     NotificationsModule,
+    FirebaseModule,
   ],
   controllers: [AppController],
   providers: [

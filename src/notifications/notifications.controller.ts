@@ -8,10 +8,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Controller('notifications')
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(
+    private readonly notificationsService: NotificationsService,
+    private firebaseService: FirebaseService,
+  ) {}
 
   @Post()
   create(@Body() body: any) {
@@ -36,5 +40,10 @@ export class NotificationsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.notificationsService.remove(Number(id));
+  }
+
+  @Post('push')
+  async sendPush(@Body() body: any) {
+    return this.firebaseService.sendTestNotification(body.token);
   }
 }
