@@ -1,6 +1,7 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import type { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -16,5 +17,10 @@ export class AuthController {
   @Post('login')
   login(@Body() body: any) {
     return this.authService.login(body);
+  }
+
+  @Get('profile')
+  getProfile(@Req() req: Request) {
+    return this.authService.getProfile(req);
   }
 }

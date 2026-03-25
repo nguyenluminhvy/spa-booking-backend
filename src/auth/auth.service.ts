@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import type { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -42,13 +43,21 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException('Invalid credentials');
+      return {
+        code: -1,
+        message: 'Invalid credentials',
+        data: null,
+      };
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      throw new BadRequestException('Invalid credentials');
+      return {
+        code: -1,
+        message: 'Invalid credentials',
+        data: null,
+      };
     }
 
     const payload = {
@@ -58,7 +67,34 @@ export class AuthService {
     };
 
     return {
-      accessToken: this.jwtService.sign(payload),
+      code: 0,
+      message: 'Login successful',
+      data: {
+        accessToken: this.jwtService.sign(payload),
+        role: user.role,
+        userId: user.id,
+      },
+    };
+  }
+
+  async getProfile(req: Request) {
+    console.log(req.user.sub, 'req user sub <<');
+    const id = req.user.sub;
+
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    return {
+      code: 0,
+      message: 'Success',
+      data: {
+        id: user?.id,
+        email: user?.email,
+        name: user?.name,
+        role: user?.role,
+        phone: user?.phone,
+      },
     };
   }
 }
