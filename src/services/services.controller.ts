@@ -6,19 +6,23 @@ import {
   Param,
   Patch,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('services')
 export class ServicesController {
   constructor(private readonly servicesService: ServicesService) {}
 
   @Roles('ADMIN')
-  @Post()
-  create(@Body() body: any) {
-    return this.servicesService.create(body);
+  @Post('create')
+  @UseInterceptors(FileInterceptor('file'))
+  create(@Body() body: any, @UploadedFile() file: Express.Multer.File) {
+    return this.servicesService.create(body, file);
   }
 
   @Get()
@@ -31,13 +35,25 @@ export class ServicesController {
     return this.servicesService.findOne(Number(id));
   }
 
+  @Roles('ADMIN')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.servicesService.update(Number(id), body);
+  @UseInterceptors(FileInterceptor('file'))
+  update(
+    @Param('id') id: string,
+    @Body() body: any,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.servicesService.update(Number(id), body, file);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.servicesService.remove(Number(id));
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  upload(@UploadedFile() file: Express.Multer.File) {
+    return this.servicesService.uploadFile(file);
   }
 }

@@ -6,21 +6,23 @@ import {
   Param,
   Patch,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
-  @Post()
-  create(@Body() body: any) {
-    return this.appointmentsService.create(body);
+  @Post('create')
+  create(@Body() body: any, @Req() req: any) {
+    return this.appointmentsService.create(body, req.user.sub);
   }
 
   @Get()
-  findAll() {
-    return this.appointmentsService.findAll();
+  findAll(@Req() req: any) {
+    return this.appointmentsService.findAll(req);
   }
 
   @Get(':id')
@@ -31,6 +33,22 @@ export class AppointmentsController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() body: any) {
     return this.appointmentsService.update(Number(id), body);
+  }
+
+  @Roles('ADMIN')
+  @Patch(':id/confirm')
+  confirmAppointment(@Param('id') id: string) {
+    return this.appointmentsService.confirmAppointment(Number(id));
+  }
+
+  @Patch(':id/cancel')
+  cancelAppointment(@Param('id') id: string) {
+    return this.appointmentsService.cancelAppointment(Number(id));
+  }
+
+  @Patch(':id/complete')
+  completeAppointment(@Param('id') id: string) {
+    return this.appointmentsService.completeAppointment(Number(id));
   }
 
   @Delete(':id')

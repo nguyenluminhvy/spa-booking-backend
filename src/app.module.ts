@@ -12,6 +12,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/roles.guard';
 import { FirebaseModule } from './firebase/firebase.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { FirebaseModule } from './firebase/firebase.module';
     ReviewsModule,
     NotificationsModule,
     FirebaseModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [
