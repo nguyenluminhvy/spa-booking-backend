@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { Request } from 'express';
+import moment from 'moment';
 
 @Injectable()
 export class AppointmentsService {
@@ -53,22 +54,54 @@ export class AppointmentsService {
     };
   }
 
-  async findAll(req: Request) {
+  async findAll(req: Request, query: any) {
     const userId = req.user.sub;
     const role = req.user.role;
 
-    const whereCondition =
-      role === 'ADMIN'
-        ? {}
-        : {
-            userId,
-          };
+    const { date, status } = query;
+
+    let whereCondition: any = {};
+
+    if (role === 'ADMIN') {
+      whereCondition = {};
+    }
+
+    if (role === 'USER') {
+      whereCondition = {
+        userId,
+      };
+    }
+
+    if (role === 'STAFF') {
+      whereCondition = {
+        staffId: userId,
+      };
+    }
+
+    if (date) {
+      if (date === 'today') {
+        whereCondition.appointmentDate = {
+          gte: moment().startOf('day').toDate(),
+          lte: moment().endOf('day').toDate(),
+        };
+      } else {
+        whereCondition.appointmentDate = {
+          gte: moment(date).startOf('day').toDate(),
+          lte: moment(date).endOf('day').toDate(),
+        };
+      }
+    }
+
+    if (status) {
+      whereCondition.status = status;
+    }
 
     const appointments = await this.prisma.appointment.findMany({
       where: whereCondition,
       include: {
         user: true,
         service: true,
+        staff: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -90,6 +123,11 @@ export class AppointmentsService {
         name: item.service.name,
         price: item.service.price,
         imageUrl: item.service.imageUrl,
+      },
+
+      staff: {
+        id: item.staff?.id,
+        name: item.staff?.name,
       },
 
       appointmentTime: item.appointmentTime,
@@ -171,5 +209,54 @@ export class AppointmentsService {
     return this.prisma.appointment.delete({
       where: { id },
     });
+  }
+
+  async assignStaff(appointmentId: number, staffId: number) {
+    // 1. check appointment
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { id: appointmentId },
+    });
+
+    if (!appointment) {
+      return {
+        code: -1,
+        message: 'Appointment not found',
+        data: {},
+      };
+    }
+
+    if (appointment.status !== 'CONFIRMED') {
+      return {
+        code: -1,
+        message: 'Only confirmed appointment can assign staff',
+        data: {},
+      };
+    }
+
+    // 3. check staff tồn tại
+    const staff = await this.prisma.user.findUnique({
+      where: { id: staffId },
+    });
+
+    if (!staff || staff.role !== 'STAFF') {
+      return {
+        code: -1,
+        message: 'Invalid staff',
+        data: {},
+      };
+    }
+
+    const result = await this.prisma.appointment.update({
+      where: { id: appointmentId },
+      data: {
+        staffId,
+      },
+    });
+
+    return {
+      code: 0,
+      message: 'Success',
+      data: result,
+    };
   }
 }

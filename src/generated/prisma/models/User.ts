@@ -42,6 +42,7 @@ export type UserMinAggregateOutputType = {
   phone: string | null
   role: $Enums.Role | null
   createdAt: Date | null
+  status: $Enums.Status | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -52,6 +53,7 @@ export type UserMaxAggregateOutputType = {
   phone: string | null
   role: $Enums.Role | null
   createdAt: Date | null
+  status: $Enums.Status | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -62,6 +64,7 @@ export type UserCountAggregateOutputType = {
   phone: number
   role: number
   createdAt: number
+  status: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type UserMinAggregateInputType = {
   phone?: true
   role?: true
   createdAt?: true
+  status?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -92,6 +96,7 @@ export type UserMaxAggregateInputType = {
   phone?: true
   role?: true
   createdAt?: true
+  status?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -102,6 +107,7 @@ export type UserCountAggregateInputType = {
   phone?: true
   role?: true
   createdAt?: true
+  status?: true
   _all?: true
 }
 
@@ -199,6 +205,7 @@ export type UserGroupByOutputType = {
   phone: string | null
   role: $Enums.Role
   createdAt: Date
+  status: $Enums.Status
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -232,6 +239,7 @@ export type UserWhereInput = {
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  status?: Prisma.EnumStatusFilter<"User"> | $Enums.Status
   appointments?: Prisma.AppointmentListRelationFilter
   staffAppointments?: Prisma.AppointmentListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
@@ -246,6 +254,7 @@ export type UserOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   appointments?: Prisma.AppointmentOrderByRelationAggregateInput
   staffAppointments?: Prisma.AppointmentOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
@@ -263,6 +272,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  status?: Prisma.EnumStatusFilter<"User"> | $Enums.Status
   appointments?: Prisma.AppointmentListRelationFilter
   staffAppointments?: Prisma.AppointmentListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
@@ -277,6 +287,7 @@ export type UserOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -295,6 +306,7 @@ export type UserScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  status?: Prisma.EnumStatusWithAggregatesFilter<"User"> | $Enums.Status
 }
 
 export type UserCreateInput = {
@@ -304,6 +316,7 @@ export type UserCreateInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   appointments?: Prisma.AppointmentCreateNestedManyWithoutUserInput
   staffAppointments?: Prisma.AppointmentCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -318,6 +331,7 @@ export type UserUncheckedCreateInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
   staffAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -331,6 +345,7 @@ export type UserUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   appointments?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
   staffAppointments?: Prisma.AppointmentUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -345,6 +360,7 @@ export type UserUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
   staffAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -359,6 +375,7 @@ export type UserCreateManyInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
 }
 
 export type UserUpdateManyMutationInput = {
@@ -368,6 +385,7 @@ export type UserUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -378,6 +396,7 @@ export type UserUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -388,6 +407,7 @@ export type UserCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -402,6 +422,7 @@ export type UserMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -412,6 +433,7 @@ export type UserMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -442,6 +464,10 @@ export type EnumRoleFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type EnumStatusFieldUpdateOperationsInput = {
+  set?: $Enums.Status
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -517,6 +543,7 @@ export type UserCreateWithoutAppointmentsInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   staffAppointments?: Prisma.AppointmentCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
@@ -530,6 +557,7 @@ export type UserUncheckedCreateWithoutAppointmentsInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   staffAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
@@ -547,6 +575,7 @@ export type UserCreateWithoutStaffAppointmentsInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   appointments?: Prisma.AppointmentCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
@@ -560,6 +589,7 @@ export type UserUncheckedCreateWithoutStaffAppointmentsInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
@@ -588,6 +618,7 @@ export type UserUpdateWithoutAppointmentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   staffAppointments?: Prisma.AppointmentUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
@@ -601,6 +632,7 @@ export type UserUncheckedUpdateWithoutAppointmentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   staffAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
@@ -624,6 +656,7 @@ export type UserUpdateWithoutStaffAppointmentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   appointments?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
@@ -637,6 +670,7 @@ export type UserUncheckedUpdateWithoutStaffAppointmentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
@@ -649,6 +683,7 @@ export type UserCreateWithoutReviewsInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   appointments?: Prisma.AppointmentCreateNestedManyWithoutUserInput
   staffAppointments?: Prisma.AppointmentCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -662,6 +697,7 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
   staffAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutStaffInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -690,6 +726,7 @@ export type UserUpdateWithoutReviewsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   appointments?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
   staffAppointments?: Prisma.AppointmentUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -703,6 +740,7 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
   staffAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutStaffNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -715,6 +753,7 @@ export type UserCreateWithoutNotificationsInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   appointments?: Prisma.AppointmentCreateNestedManyWithoutUserInput
   staffAppointments?: Prisma.AppointmentCreateNestedManyWithoutStaffInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
@@ -728,6 +767,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   phone?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  status?: $Enums.Status
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
   staffAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutStaffInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
@@ -756,6 +796,7 @@ export type UserUpdateWithoutNotificationsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   appointments?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
   staffAppointments?: Prisma.AppointmentUpdateManyWithoutStaffNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
@@ -769,6 +810,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
   staffAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutStaffNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
@@ -840,6 +882,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   phone?: boolean
   role?: boolean
   createdAt?: boolean
+  status?: boolean
   appointments?: boolean | Prisma.User$appointmentsArgs<ExtArgs>
   staffAppointments?: boolean | Prisma.User$staffAppointmentsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
@@ -855,6 +898,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phone?: boolean
   role?: boolean
   createdAt?: boolean
+  status?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -865,6 +909,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phone?: boolean
   role?: boolean
   createdAt?: boolean
+  status?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -875,9 +920,10 @@ export type UserSelectScalar = {
   phone?: boolean
   role?: boolean
   createdAt?: boolean
+  status?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "phone" | "role" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "phone" | "role" | "createdAt" | "status", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appointments?: boolean | Prisma.User$appointmentsArgs<ExtArgs>
   staffAppointments?: boolean | Prisma.User$staffAppointmentsArgs<ExtArgs>
@@ -904,6 +950,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     phone: string | null
     role: $Enums.Role
     createdAt: Date
+    status: $Enums.Status
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1338,6 +1385,7 @@ export interface UserFieldRefs {
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly status: Prisma.FieldRef<"User", 'Status'>
 }
     
 

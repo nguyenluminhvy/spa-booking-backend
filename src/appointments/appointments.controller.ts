@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   Req,
+  Query,
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -21,8 +22,8 @@ export class AppointmentsController {
   }
 
   @Get()
-  findAll(@Req() req: any) {
-    return this.appointmentsService.findAll(req);
+  findAll(@Req() req: any, @Query() query: any) {
+    return this.appointmentsService.findAll(req, query);
   }
 
   @Get(':id')
@@ -54,5 +55,11 @@ export class AppointmentsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.appointmentsService.remove(Number(id));
+  }
+
+  @Roles('ADMIN')
+  @Patch(':id/assign')
+  assignStaff(@Param('id') id: string, @Body('staffId') staffId: number) {
+    return this.appointmentsService.assignStaff(+id, staffId);
   }
 }

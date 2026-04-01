@@ -19,7 +19,11 @@ export class AuthService {
     });
 
     if (user) {
-      throw new BadRequestException('Email already exists');
+      return {
+        code: -1,
+        message: 'Email already exists',
+        data: null,
+      };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -32,7 +36,11 @@ export class AuthService {
       },
     });
 
-    return newUser;
+    return {
+      code: 0,
+      message: 'SUCCESS',
+      data: newUser,
+    };
   }
 
   async login(data: any) {
@@ -46,6 +54,14 @@ export class AuthService {
       return {
         code: -1,
         message: 'Invalid credentials',
+        data: null,
+      };
+    }
+
+    if (user.status === 'INACTIVE') {
+      return {
+        code: -1,
+        message: 'Account is inactive',
         data: null,
       };
     }
@@ -78,7 +94,6 @@ export class AuthService {
   }
 
   async getProfile(req: Request) {
-    console.log(req.user.sub, 'req user sub <<');
     const id = req.user.sub;
 
     const user = await this.prisma.user.findUnique({

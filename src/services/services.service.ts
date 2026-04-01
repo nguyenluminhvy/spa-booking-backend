@@ -30,8 +30,14 @@ export class ServicesService {
     };
   }
 
-  findAll() {
-    return this.prisma.service.findMany();
+  async findAll() {
+    const services = await this.prisma.service.findMany();
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+      data: services,
+    };
   }
 
   async findOne(id: number) {

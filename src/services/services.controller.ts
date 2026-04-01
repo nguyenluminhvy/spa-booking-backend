@@ -10,7 +10,6 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
-import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 
