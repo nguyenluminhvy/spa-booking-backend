@@ -259,4 +259,125 @@ export class AppointmentsService {
       data: result,
     };
   }
+
+  async findUpComing(req: any, query: any) {
+    const userId = req.user.sub;
+    const role = req.user.role;
+
+    const now = moment();
+
+    const whereCondition: any = { userId };
+    const queryCondition: any = {};
+
+    whereCondition.appointmentTime = {
+      gte: now,
+    };
+
+    whereCondition.status = {
+      in: ['PENDING', 'CONFIRMED'],
+    };
+
+    const appointments = await this.prisma.appointment.findMany({
+      where: whereCondition,
+      take: Number(query.limit) || 20,
+      include: {
+        user: true,
+        service: true,
+        staff: true,
+      },
+      orderBy: {
+        appointmentTime: 'asc',
+      },
+    });
+
+    const dataRtn = appointments.map((item) => ({
+      id: item.id,
+
+      user: {
+        id: item.user.id,
+        name: item.user.name,
+        email: item.user.email,
+      },
+
+      service: {
+        id: item.service.id,
+        name: item.service.name,
+        price: item.service.price,
+        imageUrl: item.service.imageUrl,
+      },
+
+      staff: {
+        id: item.staff?.id,
+        name: item.staff?.name,
+      },
+
+      appointmentTime: item.appointmentTime,
+      appointmentDate: item.appointmentDate,
+      status: item.status,
+      createdAt: item.createdAt,
+    }));
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+      data: dataRtn,
+    };
+  }
+
+  async findPast(req: any, query: any) {
+    const userId = req.user.sub;
+    const role = req.user.role;
+
+    const whereCondition: any = { userId };
+
+    whereCondition.status = {
+      notIn: ['PENDING', 'CONFIRMED'],
+    };
+
+    const appointments = await this.prisma.appointment.findMany({
+      where: whereCondition,
+      // take: Number(query.limit) || 20,
+      include: {
+        user: true,
+        service: true,
+        staff: true,
+      },
+      orderBy: {
+        appointmentTime: 'desc',
+      },
+    });
+
+    const dataRtn = appointments.map((item) => ({
+      id: item.id,
+
+      user: {
+        id: item.user.id,
+        name: item.user.name,
+        email: item.user.email,
+      },
+
+      service: {
+        id: item.service.id,
+        name: item.service.name,
+        price: item.service.price,
+        imageUrl: item.service.imageUrl,
+      },
+
+      staff: {
+        id: item.staff?.id,
+        name: item.staff?.name,
+      },
+
+      appointmentTime: item.appointmentTime,
+      appointmentDate: item.appointmentDate,
+      status: item.status,
+      createdAt: item.createdAt,
+    }));
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+      data: dataRtn,
+    };
+  }
 }

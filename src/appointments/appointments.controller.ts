@@ -26,6 +26,16 @@ export class AppointmentsController {
     return this.appointmentsService.findAll(req, query);
   }
 
+  @Get('upcoming')
+  findUpComing(@Req() req: any, @Query() query: any) {
+    return this.appointmentsService.findUpComing(req, query);
+  }
+
+  @Get('past')
+  findPast(@Req() req: any, @Query() query: any) {
+    return this.appointmentsService.findPast(req, query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.appointmentsService.findOne(Number(id));

@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -25,8 +26,8 @@ export class ServicesController {
   }
 
   @Get()
-  findAll() {
-    return this.servicesService.findAll();
+  findAll(@Query() query: any) {
+    return this.servicesService.findAll(query);
   }
 
   @Get(':id')

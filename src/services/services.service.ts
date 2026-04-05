@@ -30,8 +30,18 @@ export class ServicesService {
     };
   }
 
-  async findAll() {
-    const services = await this.prisma.service.findMany();
+  async findAll(query: any) {
+    const queryConditions: any = {
+      orderBy: {
+        createdAt: 'desc',
+      },
+    };
+
+    if (query.limit) {
+      queryConditions.take = Number(query.limit);
+    }
+
+    const services = await this.prisma.service.findMany(queryConditions);
 
     return {
       code: 0,
