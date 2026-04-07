@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export function getDateRange(range: any) {
-  const now = moment();
+  const now = moment().local();
 
   let rangeValue = range || 'day';
 
@@ -19,7 +19,7 @@ export function getDateRange(range: any) {
   }
 
   const currentStart = now.clone().startOf(rangeValue);
-  const currentEnd = now;
+  const currentEnd = now.clone().endOf(rangeValue);
 
   const prevStart = currentStart.clone().subtract(1, rangeValue as any);
   const prevEnd = currentStart.clone();
