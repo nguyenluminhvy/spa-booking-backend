@@ -16,4 +16,14 @@ export class DashboardController {
   findRevenue(@Query() query: any) {
     return this.dashboardService.revenue(query);
   }
+
+  @Get('bookings')
+  findBookings(@Query() query: any) {
+    return this.dashboardService.bookings(query);
+  }
+
+  @Get('status')
+  findStatus(@Query() query: any) {
+    return this.dashboardService.status(query);
+  }
 }
