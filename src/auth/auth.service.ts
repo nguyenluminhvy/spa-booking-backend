@@ -118,4 +118,83 @@ export class AuthService {
       },
     };
   }
+
+  async changePassword(req: any, body: any) {
+    const userId = req.user.sub;
+
+    const { oldPassword, newPassword } = body;
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return {
+        code: -1,
+        message: 'User not found',
+      };
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isMatch) {
+      return {
+        code: -1,
+        message: 'Old password is incorrect',
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    return {
+      code: 0,
+      message: 'Password updated successfully',
+    };
+  }
+
+  async updateProfile(req: any, body: any) {
+    const userId = req.user.sub;
+
+    const { name, phone } = body;
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return {
+        code: -1,
+        message: 'User not found',
+      };
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        name,
+        phone,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      code: 0,
+      message: 'Profile updated successfully',
+      data: updatedUser,
+    };
+  }
 }

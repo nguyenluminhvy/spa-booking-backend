@@ -114,7 +114,7 @@ export class DashboardService {
         return sum + Number(item.service.price);
       }
 
-      return 0;
+      return sum;
     }, 0);
 
     const prevRevenue = prevAppointments.reduce((sum, item) => {
