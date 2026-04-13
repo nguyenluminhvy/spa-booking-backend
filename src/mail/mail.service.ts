@@ -89,7 +89,6 @@ export class MailService {
       from: process.env.MAIL_FROM,
       to: email,
       subject: 'Reset Password OTP',
-      //   text: `Your OTP is ${otp}`,
       html: html,
     });
   }

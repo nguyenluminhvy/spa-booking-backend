@@ -42,3 +42,8 @@ export type Review = Prisma.ReviewModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model PasswordReset
+ * 
+ */
+export type PasswordReset = Prisma.PasswordResetModel

@@ -120,3 +120,15 @@ export function buildSmartLabels(total: number, max = 7) {
 
   return result.sort((a, b) => a - b);
 }
+
+export function generateHexToken(length: number = 64): string {
+  const hex = '0123456789abcdef';
+  let result = '';
+
+  for (let i = 0; i < length; i++) {
+    const rand = Math.floor(Math.random() * 16);
+    result += hex[rand];
+  }
+
+  return result;
+}

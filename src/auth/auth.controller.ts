@@ -33,4 +33,24 @@ export class AuthController {
   updateProfile(@Req() req: any, @Body() body: any) {
     return this.authService.updateProfile(req, body);
   }
+
+  @Public()
+  @Post('forgot-password')
+  forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Public()
+  @Post('confirm-otp')
+  confirmOtp(@Body() body: any) {
+    const { email, otp } = body;
+    return this.authService.confirmOtp(email, otp);
+  }
+
+  @Public()
+  @Post('reset-password')
+  resetPassword(@Body() body: any) {
+    const { resetToken, newPassword } = body;
+    return this.authService.resetPassword(resetToken, newPassword);
+  }
 }
