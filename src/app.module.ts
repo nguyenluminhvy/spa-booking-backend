@@ -14,6 +14,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { FirebaseModule } from './firebase/firebase.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     FirebaseModule,
     CloudinaryModule,
     DashboardModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [
