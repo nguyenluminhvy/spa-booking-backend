@@ -301,7 +301,7 @@ export class AuthService {
 
     return {
       code: 0,
-      message: 'Password updated successfully',
+      message: 'Password updated successfully, Please login again!',
     };
   }
 }
