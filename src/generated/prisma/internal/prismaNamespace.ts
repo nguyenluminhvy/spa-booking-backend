@@ -898,6 +898,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   phone: 'phone',
+  deviceToken: 'deviceToken',
   role: 'role',
   createdAt: 'createdAt',
   status: 'status'

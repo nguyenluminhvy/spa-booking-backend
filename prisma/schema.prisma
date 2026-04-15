@@ -25,6 +25,7 @@ model User {
   email             String         @unique
   password          String
   phone             String?
+  deviceToken       String?
   role              Role           @default(USER)
   createdAt         DateTime       @default(now())
   status            Status         @default(ACTIVE)
