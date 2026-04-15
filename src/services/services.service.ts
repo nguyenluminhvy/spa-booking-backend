@@ -43,10 +43,39 @@ export class ServicesService {
 
     const services = await this.prisma.service.findMany(queryConditions);
 
+    const reviewStats = await this.prisma.review.groupBy({
+      by: ['serviceId'],
+      _avg: {
+        rating: true,
+      },
+      _count: {
+        rating: true,
+      },
+    });
+
+    const map = reviewStats.reduce(
+      (acc, item) => {
+        acc[item.serviceId] = {
+          average: item._avg.rating || 0,
+          total: item._count.rating,
+        };
+        return acc;
+      },
+      {} as Record<number, { average: number; total: number }>,
+    );
+
+    const dataRtn = services.map((service) => ({
+      ...service,
+      rating: {
+        average: Number((map[service.id]?.average || 0).toFixed(1)),
+        total: map[service.id]?.total || 0,
+      },
+    }));
+
     return {
       code: 0,
       message: 'SUCCESS',
-      data: services,
+      data: dataRtn,
     };
   }
 

@@ -6,16 +6,23 @@ import {
   Param,
   Patch,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
+import type { Request } from 'express';
 
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
-  create(@Body() body: any) {
-    return this.reviewsService.create(body);
+  create(@Req() req: Request, @Body() body: any) {
+    return this.reviewsService.createReview(req, body);
+  }
+
+  @Get('service/:serviceId')
+  getServiceReviews(@Param('serviceId') serviceId: string) {
+    return this.reviewsService.getServiceReviews(Number(serviceId));
   }
 
   @Get()

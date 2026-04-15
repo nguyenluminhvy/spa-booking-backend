@@ -341,6 +341,7 @@ export class AppointmentsService {
         user: true,
         service: true,
         staff: true,
+        review: true,
       },
       orderBy: {
         appointmentTime: 'desc',
@@ -366,6 +367,12 @@ export class AppointmentsService {
       staff: {
         id: item.staff?.id,
         name: item.staff?.name,
+      },
+
+      review: {
+        id: item.review?.id,
+        rating: item.review?.rating,
+        comment: item.review?.comment,
       },
 
       appointmentTime: item.appointmentTime,
