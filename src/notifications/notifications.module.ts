@@ -8,5 +8,6 @@ import { FirebaseModule } from 'src/firebase/firebase.module';
   imports: [PrismaModule, FirebaseModule],
   controllers: [NotificationsController],
   providers: [NotificationsService],
+  exports: [NotificationsService],
 })
 export class NotificationsModule {}

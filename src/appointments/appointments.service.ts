@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { Request } from 'express';
 import moment from 'moment';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { NotificationEvent } from 'src/notifications/notification-event.enum';
 
 @Injectable()
 export class AppointmentsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async create(body: any, userId: number) {
     const { serviceId, appointmentTime } = body;
@@ -45,6 +50,10 @@ export class AppointmentsService {
         appointmentDate: new Date(appointmentTime),
         status: 'PENDING',
       },
+    });
+
+    await this.notificationsService.emit(NotificationEvent.BOOKING_CREATED, {
+      appointmentId: appointment.id,
     });
 
     return {
@@ -174,6 +183,10 @@ export class AppointmentsService {
       data: { status: 'CONFIRMED' },
     });
 
+    await this.notificationsService.emit(NotificationEvent.BOOKING_CONFIRMED, {
+      appointmentId: id,
+    });
+
     return {
       code: 0,
       message: 'SUCCESS',
@@ -186,6 +199,10 @@ export class AppointmentsService {
       data: { status: 'CANCELLED' },
     });
 
+    await this.notificationsService.emit(NotificationEvent.BOOKING_CANCELLED, {
+      appointmentId: id,
+    });
+
     return {
       code: 0,
       message: 'SUCCESS',
@@ -196,6 +213,10 @@ export class AppointmentsService {
     const appointment = await this.prisma.appointment.update({
       where: { id },
       data: { status: 'DONE' },
+    });
+
+    await this.notificationsService.emit(NotificationEvent.BOOKING_COMPLETED, {
+      appointmentId: id,
     });
 
     return {

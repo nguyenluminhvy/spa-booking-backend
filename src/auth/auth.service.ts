@@ -304,4 +304,16 @@ export class AuthService {
       message: 'Password updated successfully, Please login again!',
     };
   }
+
+  async saveDeviceToken(userId: number, token: string) {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { deviceToken: token },
+    });
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+    };
+  }
 }

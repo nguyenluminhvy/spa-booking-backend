@@ -17,11 +17,6 @@ export class NotificationsController {
     private firebaseService: FirebaseService,
   ) {}
 
-  @Post()
-  create(@Body() body: any) {
-    return this.notificationsService.create(body);
-  }
-
   @Get()
   findAll() {
     return this.notificationsService.findAll();
@@ -30,11 +25,6 @@ export class NotificationsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.notificationsService.findOne(Number(id));
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.notificationsService.update(Number(id), body);
   }
 
   @Delete(':id')
