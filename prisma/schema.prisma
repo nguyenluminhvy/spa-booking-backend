@@ -91,11 +91,15 @@ model Notification {
   id        Int      @id @default(autoincrement())
   userId    Int
   title     String
-  message   String
+  body      String
+  type      String
   isRead    Boolean  @default(false)
+  data      Json?
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
 
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
   @@map("notifications")
 }
 
