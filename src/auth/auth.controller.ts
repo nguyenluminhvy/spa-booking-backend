@@ -53,4 +53,11 @@ export class AuthController {
     const { resetToken, newPassword } = body;
     return this.authService.resetPassword(resetToken, newPassword);
   }
+
+  @Post('user/device-token')
+  saveDeviceToken(@Req() req: Request, @Body('token') token: string) {
+    const userId = req.user.sub;
+
+    return this.authService.saveDeviceToken(userId, token);
+  }
 }

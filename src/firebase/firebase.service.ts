@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import * as serviceAccount from './serviceAccountKey.json';
+import serviceAccount from './serviceAccountKey.json';
+import type { Message } from 'firebase-admin/messaging';
 
 @Injectable()
 export class FirebaseService {
@@ -8,16 +9,21 @@ export class FirebaseService {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount as any),
     });
-
-    console.log('Firebase initialized');
   }
 
   async sendTestNotification(token: string) {
-    const message = {
+    const message: Message = {
       token,
       notification: {
         title: 'Test Notification',
         body: 'Hello from NestJS 🚀',
+      },
+      android: {
+        priority: 'high',
+        notification: {
+          channelId: 'default',
+          priority: 'high',
+        },
       },
     };
 
