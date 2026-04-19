@@ -306,6 +306,16 @@ export class AuthService {
   }
 
   async saveDeviceToken(userId: number, token: string) {
+    await this.prisma.user.updateMany({
+      where: {
+        deviceToken: token,
+        NOT: { id: userId },
+      },
+      data: {
+        deviceToken: null,
+      },
+    });
+
     await this.prisma.user.update({
       where: { id: userId },
       data: { deviceToken: token },

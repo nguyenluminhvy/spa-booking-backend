@@ -1,14 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Patch,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import type { Request } from 'express';
 
 @Controller('notifications')
 export class NotificationsController {
@@ -18,18 +11,28 @@ export class NotificationsController {
   ) {}
 
   @Get()
-  findAll() {
-    return this.notificationsService.findAll();
+  findAll(@Req() req: Request) {
+    const userId = req.user.sub;
+
+    return this.notificationsService.findAll(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notificationsService.findOne(Number(id));
+  @Get('unread')
+  getUnreadCount(@Req() req: Request) {
+    const userId = req.user.sub;
+
+    return this.notificationsService.getUnreadCount(userId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notificationsService.remove(Number(id));
+  @Post('markAsRead/:notificationId')
+  markAsRead(@Param('notificationId') notificationId: number) {
+    return this.notificationsService.markAsRead(Number(notificationId));
+  }
+
+  @Post('markAllAsRead')
+  markAllAsRead(@Req() req: Request) {
+    const userId = req.user.sub;
+    return this.notificationsService.markAllAsRead(userId);
   }
 
   @Post('push')

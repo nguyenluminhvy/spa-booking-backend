@@ -11,27 +11,70 @@ export class NotificationsService {
     private firebaseService: FirebaseService,
   ) {}
 
-  findAll() {
-    return this.prisma.notification.findMany({
-      include: {
-        user: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
+  async findAll(userId: number) {
+    const data = await this.prisma.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
     });
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+      data,
+    };
   }
 
-  findOne(id: number) {
-    return this.prisma.notification.findUnique({
-      where: { id },
+  async getUnreadCount(userId: number) {
+    const count = await this.prisma.notification.count({
+      where: {
+        userId,
+        isRead: false,
+      },
     });
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+      data: { count },
+    };
   }
 
-  remove(id: number) {
-    return this.prisma.notification.delete({
-      where: { id },
+  async markAsRead(notificationId: number) {
+    const noti = await this.prisma.notification.findUnique({
+      where: { id: notificationId },
     });
+
+    if (!noti) {
+      return {
+        code: -1,
+        message: 'Notification not found',
+      };
+    }
+
+    await this.prisma.notification.update({
+      where: { id: notificationId },
+      data: { isRead: true },
+    });
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+    };
+  }
+
+  async markAllAsRead(userId: number) {
+    await this.prisma.notification.updateMany({
+      where: {
+        userId,
+        isRead: false,
+      },
+      data: { isRead: true },
+    });
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+    };
   }
 
   async emit(event: NotificationEvent, payload: any) {
@@ -110,7 +153,7 @@ export class NotificationsService {
         return {
           userIds: [appt.userId],
           title: 'Booking Confirmed',
-          body: `${appt.service.name} on ${date} at ${time} has been confirmed`,
+          body: `${appt.service.name} on ${date} at ${time} has been confirmed. Please arrive 5 minutes early.`,
           data: { appointmentId },
         };
 
@@ -118,7 +161,7 @@ export class NotificationsService {
         return {
           userIds: [appt.staffId],
           title: 'New Assignment',
-          body: `You have a ${appt.service.name} appointment at ${time}`,
+          body: `You have a ${appt.service.name} appointment on ${date} at ${time}`,
           data: { appointmentId },
         };
 
@@ -126,7 +169,7 @@ export class NotificationsService {
         return {
           userIds: adminIds,
           title: 'Appointment Completed',
-          body: `${appt.staff?.name} completed ${appt.service.name}`,
+          body: `${appt.staff?.name} completed ${appt.service.name} on ${date} at ${time}`,
           data: { appointmentId },
         };
 
@@ -134,7 +177,7 @@ export class NotificationsService {
         return {
           userIds: [...adminIds, appt.staffId].filter(Boolean),
           title: 'Booking Cancelled',
-          body: `${appt.user.name} cancelled ${appt.service.name} at ${time}`,
+          body: `${appt.user.name} cancelled ${appt.service.name} on ${date} at ${time}`,
           data: { appointmentId },
         };
     }

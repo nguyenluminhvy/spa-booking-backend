@@ -274,6 +274,10 @@ export class AppointmentsService {
       },
     });
 
+    await this.notificationsService.emit(NotificationEvent.BOOKING_ASSIGNED, {
+      appointmentId: appointmentId,
+    });
+
     return {
       code: 0,
       message: 'Success',
