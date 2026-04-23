@@ -72,4 +72,10 @@ export class AppointmentsController {
   assignStaff(@Param('id') id: string, @Body('staffId') staffId: number) {
     return this.appointmentsService.assignStaff(+id, staffId);
   }
+
+  @Roles('ADMIN')
+  @Get(':id/availableStaff')
+  getAvailableStaff(@Param('id') id: string) {
+    return this.appointmentsService.getAvailableStaff(+id);
+  }
 }

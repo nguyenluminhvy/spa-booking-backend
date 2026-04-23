@@ -15,7 +15,6 @@ export class AppointmentsService {
   async create(body: any, userId: number) {
     const { serviceId, appointmentTime } = body;
 
-    // check service tồn tại
     const service = await this.prisma.service.findUnique({
       where: { id: serviceId },
     });
@@ -30,7 +29,7 @@ export class AppointmentsService {
     // check trùng giờ (basic)
     const exist = await this.prisma.appointment.findFirst({
       where: {
-        serviceId,
+        // serviceId,
         appointmentTime: new Date(appointmentTime),
       },
     });
@@ -233,7 +232,6 @@ export class AppointmentsService {
   }
 
   async assignStaff(appointmentId: number, staffId: number) {
-    // 1. check appointment
     const appointment = await this.prisma.appointment.findUnique({
       where: { id: appointmentId },
     });
@@ -254,7 +252,6 @@ export class AppointmentsService {
       };
     }
 
-    // 3. check staff tồn tại
     const staff = await this.prisma.user.findUnique({
       where: { id: staffId },
     });
@@ -410,6 +407,93 @@ export class AppointmentsService {
       code: 0,
       message: 'SUCCESS',
       data: dataRtn,
+    };
+  }
+
+  async getAvailableStaff(appointmentId: number) {
+    // 1. lấy appointment cần assign
+
+    const target = await this.prisma.appointment.findUnique({
+      where: { id: appointmentId },
+
+      include: { service: true },
+    });
+
+    if (!target) {
+      return {
+        code: -1,
+
+        message: 'Appointment not found',
+      };
+    }
+
+    const { startTime, endTime } = this.getTimeRange(target);
+
+    const staffs = await this.prisma.user.findMany({
+      where: {
+        role: 'STAFF',
+        status: 'ACTIVE',
+      },
+    });
+
+    const staffAppointments: any = await this.prisma.appointment.findMany({
+      where: {
+        staffId: { not: null },
+        status: { in: ['CONFIRMED'] },
+      },
+
+      include: { service: true },
+    });
+
+    const map: any = new Map<number, any[]>();
+
+    for (const appt of staffAppointments) {
+      if (!map.has(appt.staffId)) {
+        map.set(appt.staffId, []);
+      }
+
+      map.get(appt.staffId).push(appt);
+    }
+
+    const result = staffs.map((staff) => {
+      const appts = map.get(staff.id) || [];
+
+      let isAvailable = true;
+
+      for (const appt of appts) {
+        const { startTime: s, endTime: e } = this.getTimeRange(appt);
+
+        if (this.isOverlap(s, e, startTime, endTime)) {
+          isAvailable = false;
+          break;
+        }
+      }
+
+      return {
+        ...staff,
+        isAvailable,
+      };
+    });
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+      data: result,
+    };
+  }
+
+  private isOverlap(aStart, aEnd, bStart, bEnd) {
+    return aStart < bEnd && aEnd > bStart;
+  }
+
+  private getTimeRange(appointment) {
+    const start = moment(appointment.appointmentTime, 'YYYY-MM-DD HH:mm');
+
+    const end = start.clone().add(appointment.service.duration, 'minutes');
+
+    return {
+      startTime: start.toDate(),
+      endTime: end.toDate(),
     };
   }
 }

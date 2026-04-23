@@ -15,6 +15,7 @@ import { FirebaseModule } from './firebase/firebase.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { MailModule } from './mail/mail.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MailModule } from './mail/mail.module';
     CloudinaryModule,
     DashboardModule,
     MailModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [

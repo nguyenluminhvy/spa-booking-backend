@@ -84,18 +84,18 @@ export class NotificationsService {
 
     if (userIds.length === 0) return;
 
-    // 1. lưu DB từng user
-    await this.prisma.notification.createMany({
-      data: userIds.map((userId) => ({
-        userId,
-        title: config.title,
-        body: config.body,
-        type: event,
-        data: config.data,
-      })),
-    });
+    if (!config?.skipStoreDB) {
+      await this.prisma.notification.createMany({
+        data: userIds.map((userId) => ({
+          userId,
+          title: config.title,
+          body: config.body,
+          type: event,
+          data: config.data,
+        })),
+      });
+    }
 
-    // 2. lấy tokens
     const users = await this.prisma.user.findMany({
       where: { id: { in: userIds } },
       select: { deviceToken: true },
@@ -105,7 +105,6 @@ export class NotificationsService {
       .map((u) => u.deviceToken)
       .filter((t): t is string => !!t);
 
-    // 3. push (🔥 multicast)
     await this.firebaseService.sendMulticast(
       tokens,
       config.title,
@@ -115,6 +114,18 @@ export class NotificationsService {
   }
 
   private async resolve(event: NotificationEvent, payload: any) {
+    if (event === NotificationEvent.CHAT_MESSAGE) {
+      const { conversationId, content, receiverIds } = payload;
+
+      return {
+        userIds: receiverIds,
+        title: 'Tin nhắn mới',
+        body: content,
+        data: { conversationId },
+        skipStoreDB: true,
+      };
+    }
+
     const { appointmentId } = payload;
 
     const appt = await this.prisma.appointment.findUnique({
