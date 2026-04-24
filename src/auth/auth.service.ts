@@ -62,7 +62,7 @@ export class AuthService {
     if (!user) {
       return {
         code: -1,
-        message: 'Invalid credentials',
+        message: 'Incorrect email or password. Please try again.',
         data: null,
       };
     }
@@ -80,7 +80,7 @@ export class AuthService {
     if (!isMatch) {
       return {
         code: -1,
-        message: 'Invalid credentials',
+        message: 'Incorrect email or password. Please try again.',
         data: null,
       };
     }
