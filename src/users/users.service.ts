@@ -140,16 +140,55 @@ export class UsersService {
   }
 
   async deactivateUser(id: number) {
-    await this.prisma.user.update({
-      where: { id },
-      data: { status: 'INACTIVE' },
-    });
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+      });
 
-    return {
-      code: 0,
-      message: 'SUCCESS',
-      data: {},
-    };
+      if (!user) {
+        return {
+          code: -1,
+          message: 'User not found.',
+        };
+      }
+
+      if (user.role === 'STAFF') {
+        const activeAppointments = await this.prisma.appointment.count({
+          where: {
+            staffId: id,
+            status: {
+              in: ['CONFIRMED'],
+            },
+          },
+        });
+
+        if (activeAppointments > 0) {
+          return {
+            code: -1,
+            message:
+              'This staff member still has ongoing appointments. Please complete or reassign them before deactivating.',
+          };
+        }
+      }
+
+      await this.prisma.user.update({
+        where: { id },
+        data: { status: 'INACTIVE' },
+      });
+
+      return {
+        code: 0,
+        message: 'User has been deactivated successfully.',
+        data: {},
+      };
+    } catch (err) {
+      console.error('Deactivate user error:', err);
+
+      return {
+        code: -1,
+        message: 'Something went wrong. Please try again later.',
+      };
+    }
   }
 
   async resetPassword(id: number) {
