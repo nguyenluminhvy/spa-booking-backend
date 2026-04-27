@@ -11,23 +11,74 @@ export class ServicesService {
   ) {}
 
   async create(data: any, file: Express.Multer.File) {
-    const result = await this.cloudinaryService.uploadFile(file);
+    try {
+      if (!data?.name || !data?.price || !data?.duration) {
+        return {
+          code: -1,
+          message: 'Please fill in all required information.',
+        };
+      }
 
-    const service = await this.prisma.service.create({
-      data: {
-        name: data?.name,
-        description: data?.description,
-        price: Number(data?.price),
-        duration: Number(data?.duration),
-        imageUrl: result.secure_url,
-      },
-    });
+      if (!file) {
+        return {
+          code: -1,
+          message: 'Please upload an image for this service.',
+        };
+      }
 
-    return {
-      code: 0,
-      message: 'SUCCESS',
-      data: service,
-    };
+      const price = Number(data.price);
+
+      const duration = Number(data.duration);
+
+      if (isNaN(price) || price <= 0) {
+        return {
+          code: -1,
+          message: 'Please enter a valid price.',
+        };
+      }
+
+      if (isNaN(duration) || duration <= 0) {
+        return {
+          code: -1,
+
+          message: 'Please enter a valid duration.',
+        };
+      }
+
+      let uploadResult;
+
+      try {
+        uploadResult = await this.cloudinaryService.uploadFile(file);
+      } catch (err) {
+        return {
+          code: -1,
+          message: 'We couldn’t upload the image. Please try again.',
+        };
+      }
+
+      const service = await this.prisma.service.create({
+        data: {
+          name: data.name,
+          description: data.description || '',
+          price,
+          duration,
+          imageUrl: uploadResult.secure_url,
+        },
+      });
+
+      return {
+        code: 0,
+        message: 'Service created successfully ✨',
+        data: service,
+      };
+    } catch (err) {
+      console.error('Create service error:', err);
+
+      return {
+        code: -1,
+        message: 'Something went wrong. Please try again later.',
+      };
+    }
   }
 
   async findAll(query: any) {
@@ -92,33 +143,74 @@ export class ServicesService {
   }
 
   async update(id: number, data: any, file: Express.Multer.File) {
-    const dataUpdate: any = {};
-
-    if (file) {
-      const result = await this.cloudinaryService.uploadFile(file);
-
-      if (result) {
-        dataUpdate.imageUrl = result.secure_url;
+    try {
+      if (!data?.name || !data?.price || !data?.duration) {
+        return {
+          code: -1,
+          message: 'Please fill in all required information.',
+        };
       }
+
+      const price = Number(data.price);
+      const duration = Number(data.duration);
+
+      if (isNaN(price) || price <= 0) {
+        return {
+          code: -1,
+          message: 'Please enter a valid price.',
+        };
+      }
+
+      if (isNaN(duration) || duration <= 0) {
+        return {
+          code: -1,
+
+          message: 'Please enter a valid duration.',
+        };
+      }
+
+      const dataUpdate: any = {};
+
+      if (file) {
+        try {
+          const result = await this.cloudinaryService.uploadFile(file);
+
+          if (result) {
+            dataUpdate.imageUrl = result.secure_url;
+          }
+        } catch (err) {
+          return {
+            code: -1,
+            message: 'We couldn’t upload the image. Please try again.',
+          };
+        }
+      }
+
+      if (data) {
+        dataUpdate.name = data?.name;
+        dataUpdate.description = data?.description;
+        dataUpdate.price = Number(data?.price);
+        dataUpdate.duration = Number(data?.duration);
+      }
+
+      const service = await this.prisma.service.update({
+        where: { id },
+        data: dataUpdate,
+      });
+
+      return {
+        code: 0,
+        message: 'SUCCESS',
+        data: service,
+      };
+    } catch (err) {
+      console.error('Create service error:', err);
+
+      return {
+        code: -1,
+        message: 'Something went wrong. Please try again later.',
+      };
     }
-
-    if (data) {
-      dataUpdate.name = data?.name;
-      dataUpdate.description = data?.description;
-      dataUpdate.price = Number(data?.price);
-      dataUpdate.duration = Number(data?.duration);
-    }
-
-    const service = await this.prisma.service.update({
-      where: { id },
-      data: dataUpdate,
-    });
-
-    return {
-      code: 0,
-      message: 'SUCCESS',
-      data: service,
-    };
   }
 
   remove(id: number) {

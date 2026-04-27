@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService,
+  ) {}
 
   async findAll(body: any) {
     const whereConditions: any = {
@@ -152,14 +156,16 @@ export class UsersService {
     const passwordDefault = '12345678';
     const hashedPassword = await bcrypt.hash(passwordDefault, 10);
 
-    await this.prisma.user.update({
+    const { email } = await this.prisma.user.update({
       where: { id },
       data: { password: hashedPassword },
     });
 
+    await this.mailService.sendResetPasswordByAdmin(email);
+
     return {
       code: 0,
-      message: 'SUCCESS',
+      message: 'Reset password successfully!',
       data: {},
     };
   }

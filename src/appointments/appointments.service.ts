@@ -30,6 +30,7 @@ export class AppointmentsService {
     const exist = await this.prisma.appointment.findFirst({
       where: {
         // serviceId,
+        userId: userId,
         appointmentTime: new Date(appointmentTime),
       },
     });
