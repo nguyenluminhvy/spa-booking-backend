@@ -66,7 +66,7 @@ export class UsersService {
 
   async createStaff(data: any) {
     try {
-      const { email, password, name } = data;
+      const { email, password = '', name } = data;
 
       if (!email || !name) {
         return {
@@ -116,7 +116,7 @@ export class UsersService {
         },
       });
 
-      await this.mailService.sendStaffInvitation(email, rawPassword, name);
+      await this.mailService.sendStaffInvitation(email, password, name);
 
       return {
         code: 0,
