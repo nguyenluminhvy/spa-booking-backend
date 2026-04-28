@@ -45,6 +45,7 @@ export type ServiceMinAggregateOutputType = {
   price: runtime.Decimal | null
   duration: number | null
   imageUrl: string | null
+  status: $Enums.Status | null
   createdAt: Date | null
 }
 
@@ -55,6 +56,7 @@ export type ServiceMaxAggregateOutputType = {
   price: runtime.Decimal | null
   duration: number | null
   imageUrl: string | null
+  status: $Enums.Status | null
   createdAt: Date | null
 }
 
@@ -65,6 +67,7 @@ export type ServiceCountAggregateOutputType = {
   price: number
   duration: number
   imageUrl: number
+  status: number
   createdAt: number
   _all: number
 }
@@ -89,6 +92,7 @@ export type ServiceMinAggregateInputType = {
   price?: true
   duration?: true
   imageUrl?: true
+  status?: true
   createdAt?: true
 }
 
@@ -99,6 +103,7 @@ export type ServiceMaxAggregateInputType = {
   price?: true
   duration?: true
   imageUrl?: true
+  status?: true
   createdAt?: true
 }
 
@@ -109,6 +114,7 @@ export type ServiceCountAggregateInputType = {
   price?: true
   duration?: true
   imageUrl?: true
+  status?: true
   createdAt?: true
   _all?: true
 }
@@ -206,6 +212,7 @@ export type ServiceGroupByOutputType = {
   price: runtime.Decimal
   duration: number
   imageUrl: string | null
+  status: $Enums.Status
   createdAt: Date
   _count: ServiceCountAggregateOutputType | null
   _avg: ServiceAvgAggregateOutputType | null
@@ -239,6 +246,7 @@ export type ServiceWhereInput = {
   price?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFilter<"Service"> | number
   imageUrl?: Prisma.StringNullableFilter<"Service"> | string | null
+  status?: Prisma.EnumStatusFilter<"Service"> | $Enums.Status
   createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   appointments?: Prisma.AppointmentListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
@@ -251,6 +259,7 @@ export type ServiceOrderByWithRelationInput = {
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   appointments?: Prisma.AppointmentOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
@@ -266,6 +275,7 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   price?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFilter<"Service"> | number
   imageUrl?: Prisma.StringNullableFilter<"Service"> | string | null
+  status?: Prisma.EnumStatusFilter<"Service"> | $Enums.Status
   createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   appointments?: Prisma.AppointmentListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
@@ -278,6 +288,7 @@ export type ServiceOrderByWithAggregationInput = {
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ServiceCountOrderByAggregateInput
   _avg?: Prisma.ServiceAvgOrderByAggregateInput
@@ -296,6 +307,7 @@ export type ServiceScalarWhereWithAggregatesInput = {
   price?: Prisma.DecimalWithAggregatesFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntWithAggregatesFilter<"Service"> | number
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
+  status?: Prisma.EnumStatusWithAggregatesFilter<"Service"> | $Enums.Status
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Service"> | Date | string
 }
 
@@ -305,6 +317,7 @@ export type ServiceCreateInput = {
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration: number
   imageUrl?: string | null
+  status?: $Enums.Status
   createdAt?: Date | string
   appointments?: Prisma.AppointmentCreateNestedManyWithoutServiceInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutServiceInput
@@ -317,6 +330,7 @@ export type ServiceUncheckedCreateInput = {
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration: number
   imageUrl?: string | null
+  status?: $Enums.Status
   createdAt?: Date | string
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutServiceInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServiceInput
@@ -328,6 +342,7 @@ export type ServiceUpdateInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUpdateManyWithoutServiceNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutServiceNestedInput
@@ -340,6 +355,7 @@ export type ServiceUncheckedUpdateInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutServiceNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServiceNestedInput
@@ -352,6 +368,7 @@ export type ServiceCreateManyInput = {
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration: number
   imageUrl?: string | null
+  status?: $Enums.Status
   createdAt?: Date | string
 }
 
@@ -361,6 +378,7 @@ export type ServiceUpdateManyMutationInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -371,6 +389,7 @@ export type ServiceUncheckedUpdateManyInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -381,6 +400,7 @@ export type ServiceCountOrderByAggregateInput = {
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -397,6 +417,7 @@ export type ServiceMaxOrderByAggregateInput = {
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -407,6 +428,7 @@ export type ServiceMinOrderByAggregateInput = {
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -463,6 +485,7 @@ export type ServiceCreateWithoutAppointmentsInput = {
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration: number
   imageUrl?: string | null
+  status?: $Enums.Status
   createdAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutServiceInput
 }
@@ -474,6 +497,7 @@ export type ServiceUncheckedCreateWithoutAppointmentsInput = {
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration: number
   imageUrl?: string | null
+  status?: $Enums.Status
   createdAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServiceInput
 }
@@ -500,6 +524,7 @@ export type ServiceUpdateWithoutAppointmentsInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutServiceNestedInput
 }
@@ -511,6 +536,7 @@ export type ServiceUncheckedUpdateWithoutAppointmentsInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServiceNestedInput
 }
@@ -521,6 +547,7 @@ export type ServiceCreateWithoutReviewsInput = {
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration: number
   imageUrl?: string | null
+  status?: $Enums.Status
   createdAt?: Date | string
   appointments?: Prisma.AppointmentCreateNestedManyWithoutServiceInput
 }
@@ -532,6 +559,7 @@ export type ServiceUncheckedCreateWithoutReviewsInput = {
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration: number
   imageUrl?: string | null
+  status?: $Enums.Status
   createdAt?: Date | string
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutServiceInput
 }
@@ -558,6 +586,7 @@ export type ServiceUpdateWithoutReviewsInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUpdateManyWithoutServiceNestedInput
 }
@@ -569,6 +598,7 @@ export type ServiceUncheckedUpdateWithoutReviewsInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutServiceNestedInput
 }
@@ -620,6 +650,7 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   price?: boolean
   duration?: boolean
   imageUrl?: boolean
+  status?: boolean
   createdAt?: boolean
   appointments?: boolean | Prisma.Service$appointmentsArgs<ExtArgs>
   reviews?: boolean | Prisma.Service$reviewsArgs<ExtArgs>
@@ -633,6 +664,7 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   price?: boolean
   duration?: boolean
   imageUrl?: boolean
+  status?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["service"]>
 
@@ -643,6 +675,7 @@ export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   price?: boolean
   duration?: boolean
   imageUrl?: boolean
+  status?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["service"]>
 
@@ -653,10 +686,11 @@ export type ServiceSelectScalar = {
   price?: boolean
   duration?: boolean
   imageUrl?: boolean
+  status?: boolean
   createdAt?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "duration" | "imageUrl" | "createdAt", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "duration" | "imageUrl" | "status" | "createdAt", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appointments?: boolean | Prisma.Service$appointmentsArgs<ExtArgs>
   reviews?: boolean | Prisma.Service$reviewsArgs<ExtArgs>
@@ -678,6 +712,7 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     price: runtime.Decimal
     duration: number
     imageUrl: string | null
+    status: $Enums.Status
     createdAt: Date
   }, ExtArgs["result"]["service"]>
   composites: {}
@@ -1110,6 +1145,7 @@ export interface ServiceFieldRefs {
   readonly price: Prisma.FieldRef<"Service", 'Decimal'>
   readonly duration: Prisma.FieldRef<"Service", 'Int'>
   readonly imageUrl: Prisma.FieldRef<"Service", 'String'>
+  readonly status: Prisma.FieldRef<"Service", 'Status'>
   readonly createdAt: Prisma.FieldRef<"Service", 'DateTime'>
 }
     

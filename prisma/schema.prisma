@@ -44,6 +44,7 @@ model Service {
   price        Decimal
   duration     Int
   imageUrl     String?
+  status       Status        @default(ACTIVE)
   createdAt    DateTime      @default(now())
   appointments Appointment[]
   reviews      Review[]
