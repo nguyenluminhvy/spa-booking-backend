@@ -65,47 +65,86 @@ export class UsersService {
   }
 
   async createStaff(data: any) {
-    const { email, password, name } = data;
+    try {
+      const { email, password, name } = data;
 
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+      if (!email || !name) {
+        return {
+          code: -1,
+          message: 'Please fill in all required information.',
+          data: null,
+        };
+      }
 
-    if (user) {
+      if (password.length < 6) {
+        return {
+          code: -1,
+          message: 'Password must be at least 8 characters.',
+          data: null,
+        };
+      }
+
+      const existed = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existed) {
+        return {
+          code: -1,
+          message: 'This email is already in use.',
+          data: null,
+        };
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = await this.prisma.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          name,
+          role: 'STAFF',
+        },
+
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          createdAt: true,
+          status: true,
+        },
+      });
+
+      await this.mailService.sendStaffInvitation(email, rawPassword, name);
+
+      return {
+        code: 0,
+        message: 'Staff account created successfully.',
+        data: newUser,
+      };
+    } catch (err: any) {
+      console.error('Create staff error:', err);
+
       return {
         code: -1,
-        message: 'Email already exists',
+        message: 'Something went wrong. Please try again later.',
+        data: null,
+      };
+    }
+  }
+
+  async updateStaff(id: number, data: any) {
+    const { email, name } = data;
+
+    if (!email || !name) {
+      return {
+        code: -1,
+        message: 'Please fill in all required information.',
         data: null,
       };
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await this.prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name,
-        role: 'STAFF',
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        createdAt: true,
-        status: true,
-      },
-    });
-
-    return {
-      code: 0,
-      message: 'SUCCESS',
-      data: newUser,
-    };
-  }
-
-  async updateStaff(id: number, data: any) {
     const user = await this.prisma.user.update({
       where: { id },
       data,

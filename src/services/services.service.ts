@@ -131,15 +131,98 @@ export class ServicesService {
   }
 
   async findOne(id: number) {
-    const service = await this.prisma.service.findUnique({
-      where: { id },
-    });
+    try {
+      const service = await this.prisma.service.findUnique({
+        where: { id },
+        include: {
+          reviews: {
+            take: 5,
+            orderBy: { createdAt: 'desc' },
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  role: true,
+                },
+              },
+            },
+          },
+        },
+      });
 
-    return {
-      code: 0,
-      message: 'SUCCESS',
-      data: service,
-    };
+      if (!service) {
+        return {
+          code: -1,
+          message: 'Service not found.',
+          data: null,
+        };
+      }
+
+      const reviewStats = await this.prisma.review.aggregate({
+        where: { serviceId: id },
+        _avg: { rating: true },
+        _count: { rating: true },
+      });
+
+      const ratingGroup = await this.prisma.review.groupBy({
+        by: ['rating'],
+        where: { serviceId: id },
+        _count: { rating: true },
+      });
+
+      const totalReviews = reviewStats._count.rating || 0;
+
+      const ratingMap = ratingGroup.reduce(
+        (acc, item) => {
+          acc[item.rating] = item._count.rating;
+
+          return acc;
+        },
+        {} as Record<number, number>,
+      );
+
+      const ratingData = [5, 4, 3, 2, 1].map((star) => {
+        const count = ratingMap[star] || 0;
+
+        return {
+          star,
+          count,
+          percent: totalReviews ? Math.round((count / totalReviews) * 100) : 0,
+        };
+      });
+
+      const bookingCount = await this.prisma.appointment.count({
+        where: {
+          serviceId: id,
+          status: {
+            in: ['PENDING', 'CONFIRMED', 'DONE'],
+          },
+        },
+      });
+      return {
+        code: 0,
+        message: 'Service retrieved successfully.',
+        data: {
+          ...service,
+          rating: {
+            average: reviewStats._avg.rating || 0,
+            total: totalReviews,
+            breakdown: ratingData,
+          },
+          bookings: bookingCount,
+        },
+      };
+    } catch (err) {
+      console.error('Find service error:', err);
+
+      return {
+        code: -1,
+        message: 'Something went wrong. Please try again later.',
+        data: null,
+      };
+    }
   }
 
   async update(id: number, data: any, file: Express.Multer.File) {
