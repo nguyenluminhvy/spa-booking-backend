@@ -134,6 +134,14 @@ export class DashboardService {
 
     const cancelled = currentCancelled;
 
+    const topServices = await this.getTopServices(currentAppointmentWhere);
+
+    const topStaff = await this.getTopStaff(currentAppointmentWhere);
+
+    const topUserBooking = await this.getTopUserBooking(
+      currentAppointmentWhere,
+    );
+
     return {
       code: 0,
       message: 'SUCCESS',
@@ -143,6 +151,10 @@ export class DashboardService {
         newUsers,
         completed,
         cancelled,
+
+        topServices,
+        topStaff,
+        topUserBooking,
 
         growth:
           range === 'all'
@@ -402,5 +414,103 @@ export class DashboardService {
     ];
 
     return buildFinal(labels, fullData, labels, (m) => months[m]);
+  }
+
+  private async getTopServices(whereCondition: any) {
+    const topServices = await this.prisma.appointment.groupBy({
+      by: ['serviceId'],
+      where: {
+        ...whereCondition,
+        status: 'DONE',
+      },
+      _count: { serviceId: true },
+      orderBy: {
+        _count: { serviceId: 'desc' },
+      },
+      take: 5,
+    });
+
+    const serviceIds = topServices.map((s) => s.serviceId);
+
+    const services = await this.prisma.service.findMany({
+      where: { id: { in: serviceIds } },
+    });
+
+    const topServicesData = topServices.map((item) => {
+      const service = services.find((s) => s.id === item.serviceId);
+
+      return {
+        id: service?.id,
+        name: service?.name,
+        bookings: item._count.serviceId,
+      };
+    });
+
+    return topServicesData;
+  }
+
+  private async getTopStaff(whereCondition: any) {
+    const topStaff = await this.prisma.appointment.groupBy({
+      by: ['staffId'],
+      where: {
+        ...whereCondition,
+        status: 'DONE',
+        staffId: { not: null },
+      },
+      _count: { staffId: true },
+      orderBy: {
+        _count: { staffId: 'desc' },
+      },
+      take: 5,
+    });
+
+    const staffIds = topStaff.map((s) => Number(s.staffId));
+
+    const staffs = await this.prisma.user.findMany({
+      where: { id: { in: staffIds } },
+    });
+
+    const topStaffData = topStaff.map((item) => {
+      const staff = staffs.find((s) => s.id === item.staffId);
+
+      return {
+        id: staff?.id,
+        name: staff?.name,
+        completed: item._count.staffId,
+      };
+    });
+
+    return topStaffData;
+  }
+
+  private async getTopUserBooking(whereCondition: any) {
+    const topUsers = await this.prisma.appointment.groupBy({
+      by: ['userId'],
+      where: {
+        ...whereCondition,
+      },
+      _count: { userId: true },
+      orderBy: {
+        _count: { userId: 'desc' },
+      },
+      take: 5,
+    });
+
+    const userIds = topUsers.map((u) => u.userId);
+
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: userIds } },
+    });
+
+    const topUsersData = topUsers.map((item) => {
+      const user = users.find((u) => u.id === item.userId);
+      return {
+        id: user?.id,
+        name: user?.name,
+        bookings: item._count.userId,
+      };
+    });
+
+    return topUsersData;
   }
 }
