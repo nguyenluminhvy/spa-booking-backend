@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import type { Request } from 'express';
 
 @Injectable()
 export class ServicesService {
@@ -81,13 +82,20 @@ export class ServicesService {
     }
   }
 
-  async findAll(query: any) {
+  async findAll(query: any, req: Request) {
+    const isAdminRole = req.user.role === 'ADMIN';
+
     const queryConditions: any = {
       orderBy: {
-        createdAt: 'desc',
+        createdAt: query?.orderBy || 'desc',
       },
     };
 
+    if (!isAdminRole) {
+      queryConditions.where = {
+        status: 'ACTIVE',
+      };
+    }
     if (query.limit) {
       queryConditions.take = Number(query.limit);
     }
@@ -271,6 +279,7 @@ export class ServicesService {
 
       if (data) {
         dataUpdate.name = data?.name;
+        dataUpdate.status = data?.status;
         dataUpdate.description = data?.description;
         dataUpdate.price = Number(data?.price);
         dataUpdate.duration = Number(data?.duration);
