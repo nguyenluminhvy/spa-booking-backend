@@ -47,3 +47,8 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type PasswordReset = Prisma.PasswordResetModel
+/**
+ * Model Voucher
+ * 
+ */
+export type Voucher = Prisma.VoucherModel

@@ -24,3 +24,11 @@ export const Status = {
 } as const
 
 export type Status = (typeof Status)[keyof typeof Status]
+
+
+export const VoucherType = {
+  PERCENT: 'PERCENT',
+  FIXED: 'FIXED'
+} as const
+
+export type VoucherType = (typeof VoucherType)[keyof typeof VoucherType]
