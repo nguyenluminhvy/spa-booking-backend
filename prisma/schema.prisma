@@ -71,6 +71,11 @@ model Appointment {
   user            User     @relation("UserAppointments", fields: [userId], references: [id])
   staff           User?    @relation("StaffAppointments", fields: [staffId], references: [id])
 
+  originalPrice Float?
+  finalPrice    Float?
+  discount      Float   @default(0)
+  voucherCode   String?
+
   review Review?
 
   @@map("appointments")
