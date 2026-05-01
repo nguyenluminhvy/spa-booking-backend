@@ -4,16 +4,18 @@ import type { Request } from 'express';
 import moment from 'moment';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { NotificationEvent } from 'src/notifications/notification-event.enum';
+import { VoucherService } from 'src/voucher/voucher.service';
 
 @Injectable()
 export class AppointmentsService {
   constructor(
     private prisma: PrismaService,
     private notificationsService: NotificationsService,
+    private voucherService: VoucherService,
   ) {}
 
   async create(body: any, userId: number) {
-    const { serviceId, appointmentTime } = body;
+    const { serviceId, appointmentTime, voucherCode } = body;
 
     const service = await this.prisma.service.findUnique({
       where: { id: serviceId },
@@ -38,8 +40,29 @@ export class AppointmentsService {
     if (exist) {
       return {
         code: -1,
-        message: 'Time slot already booked',
+        message:
+          'You already have an appointment during this time slot. Please choose a different time.',
       };
+    }
+
+    const price = Number(service.price);
+
+    let discount = 0;
+    let finalPrice = price;
+
+    if (voucherCode) {
+      const result: any = await this.voucherService.validateAndCalculate(
+        voucherCode,
+        price,
+      );
+
+      if (result.code !== 0) return result;
+
+      await this.voucherService.increaseUsage(voucherCode);
+
+      discount = result.data.discount;
+
+      finalPrice = result.data.finalAmount;
     }
 
     const appointment = await this.prisma.appointment.create({
@@ -48,6 +71,12 @@ export class AppointmentsService {
         serviceId,
         appointmentTime: new Date(appointmentTime),
         appointmentDate: new Date(appointmentTime),
+
+        originalPrice: price,
+        finalPrice,
+        discount,
+        voucherCode: voucherCode || null,
+
         status: 'PENDING',
       },
     });
@@ -139,6 +168,11 @@ export class AppointmentsService {
         name: item.staff?.name,
       },
 
+      originalPrice: item.originalPrice,
+      finalPrice: item.finalPrice,
+      discount: item.discount,
+      voucherCode: item.voucherCode,
+
       appointmentTime: item.appointmentTime,
       appointmentDate: item.appointmentDate,
       status: item.status,
@@ -202,6 +236,10 @@ export class AppointmentsService {
     await this.notificationsService.emit(NotificationEvent.BOOKING_CANCELLED, {
       appointmentId: id,
     });
+
+    if (appointment.voucherCode) {
+      await this.voucherService.decreaseUsage(appointment.voucherCode);
+    }
 
     return {
       code: 0,
@@ -334,6 +372,11 @@ export class AppointmentsService {
         name: item.staff?.name,
       },
 
+      originalPrice: item.originalPrice,
+      finalPrice: item.finalPrice,
+      discount: item.discount,
+      voucherCode: item.voucherCode,
+
       appointmentTime: item.appointmentTime,
       appointmentDate: item.appointmentDate,
       status: item.status,
@@ -397,6 +440,11 @@ export class AppointmentsService {
         rating: item.review?.rating,
         comment: item.review?.comment,
       },
+
+      originalPrice: item.originalPrice,
+      finalPrice: item.finalPrice,
+      discount: item.discount,
+      voucherCode: item.voucherCode,
 
       appointmentTime: item.appointmentTime,
       appointmentDate: item.appointmentDate,

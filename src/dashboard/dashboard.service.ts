@@ -111,7 +111,7 @@ export class DashboardService {
 
     const revenue = currentAppointments.reduce((sum, item) => {
       if (item.status === 'DONE') {
-        return sum + Number(item.service.price);
+        return sum + Number(item.finalPrice);
       }
 
       return sum;
@@ -119,7 +119,7 @@ export class DashboardService {
 
     const prevRevenue = prevAppointments.reduce((sum, item) => {
       if (item.status === 'DONE') {
-        return sum + Number(item.service.price);
+        return sum + Number(item.finalPrice);
       }
 
       return 0;
@@ -142,6 +142,8 @@ export class DashboardService {
       currentAppointmentWhere,
     );
 
+    const voucher = this.getVoucherOverview(currentAppointments);
+
     return {
       code: 0,
       message: 'SUCCESS',
@@ -155,6 +157,8 @@ export class DashboardService {
         topServices,
         topStaff,
         topUserBooking,
+
+        voucher,
 
         growth:
           range === 'all'
@@ -180,12 +184,12 @@ export class DashboardService {
       where,
       select: {
         appointmentTime: true,
-        service: { select: { price: true } },
+        finalPrice: true,
       },
     });
 
     return this.handleTimeSeries(appointments, range, (item) =>
-      Number(item.service.price),
+      Number(item.finalPrice),
     );
   }
 
@@ -512,5 +516,34 @@ export class DashboardService {
     });
 
     return topUsersData;
+  }
+
+  private getVoucherOverview(appointments: any[]) {
+    const voucherUsageCount = appointments.filter(
+      (item) => item.voucherCode && item.status === 'DONE',
+    ).length;
+
+    const totalDoneAppointments = appointments.filter(
+      (item) => item.status === 'DONE',
+    );
+
+    const voucherUsageRate =
+      totalDoneAppointments.length > 0
+        ? Math.round((voucherUsageCount / totalDoneAppointments.length) * 100)
+        : 0;
+
+    const totalDiscount: any = totalDoneAppointments?.reduce((sum, item) => {
+      const original = Number(item.originalPrice || 0);
+
+      const final = Number(item.finalPrice || 0);
+
+      return sum + Math.max(original - final, 0);
+    }, 0);
+
+    return {
+      usageCount: voucherUsageCount,
+      usageRate: voucherUsageRate,
+      totalDiscount,
+    };
   }
 }
