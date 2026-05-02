@@ -1,7 +1,26 @@
 import moment from 'moment';
 
-export function getDateRange(range: any) {
+export function getDateRange(query: any) {
   const now = moment().local();
+
+  const { range, startDate, endDate } = query;
+
+  if (startDate && endDate) {
+    const currentStart = moment(startDate).startOf('day');
+    const currentEnd = moment(endDate).endOf('day');
+
+    const diff = currentEnd.diff(currentStart, 'days') + 1;
+
+    const prevStart = currentStart.clone().subtract(diff, 'days');
+    const prevEnd = currentStart.clone().subtract(1, 'day').endOf('day');
+
+    return {
+      currentStart: currentStart.toDate(),
+      currentEnd: currentEnd.toDate(),
+      prevStart: prevStart.toDate(),
+      prevEnd: prevEnd.toDate(),
+    };
+  }
 
   let rangeValue = range || 'day';
 

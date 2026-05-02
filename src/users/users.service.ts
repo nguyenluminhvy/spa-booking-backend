@@ -10,15 +10,28 @@ export class UsersService {
     private mailService: MailService,
   ) {}
 
-  async findAll(body: any) {
+  async findAll(query: any) {
+    const { role, status, startDate, endDate } = query;
+
     const whereConditions: any = {
       role: {
         not: 'ADMIN',
       },
     };
 
-    if (body.role === 'STAFF') {
-      whereConditions.role = 'STAFF';
+    if (role) {
+      whereConditions.role = role;
+    }
+
+    if (status) {
+      whereConditions.status = status;
+    }
+
+    if (startDate && endDate) {
+      whereConditions.createdAt = {
+        gte: new Date(startDate),
+        lte: new Date(endDate),
+      };
     }
 
     const users = await this.prisma.user.findMany({

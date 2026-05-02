@@ -96,7 +96,7 @@ export class AppointmentsService {
     const userId = req.user.sub;
     const role = req.user.role;
 
-    const { date, status } = query;
+    const { date, status, startDate, endDate } = query;
 
     let whereCondition: any = {};
 
@@ -128,6 +128,13 @@ export class AppointmentsService {
           lte: moment(date).endOf('day').toDate(),
         };
       }
+    }
+
+    if (startDate && endDate) {
+      whereCondition.appointmentDate = {
+        gte: moment(startDate).startOf('day').toDate(),
+        lte: moment(endDate).endOf('day').toDate(),
+      };
     }
 
     if (status) {

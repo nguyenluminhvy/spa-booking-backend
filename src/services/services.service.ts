@@ -85,31 +85,45 @@ export class ServicesService {
   async findAll(query: any, req: Request) {
     const isAdminRole = req.user.role === 'ADMIN';
 
-    const queryConditions: any = {
-      orderBy: {
-        createdAt: query?.orderBy || 'desc',
-      },
-    };
+    const {
+      minPrice,
+      maxPrice,
+      maxRating,
+      status,
+      sort = 'createdAt',
+      order = 'desc',
+      limit,
+    } = query;
 
-    if (!isAdminRole) {
-      queryConditions.where = {
-        status: 'ACTIVE',
+    const where: any = {};
+
+    if (isAdminRole) {
+      where.status = status;
+    } else {
+      where.status = 'ACTIVE';
+    }
+
+    if (minPrice || maxPrice) {
+      where.price = {
+        ...(minPrice && { gte: Number(minPrice) }),
+        ...(maxPrice && { lte: Number(maxPrice) }),
       };
     }
-    if (query.limit) {
-      queryConditions.take = Number(query.limit);
-    }
 
-    const services = await this.prisma.service.findMany(queryConditions);
+    const services = await this.prisma.service.findMany({
+      where,
+      take: limit ? Number(limit) : undefined,
+    });
+
+    const serviceIds = services.map((s) => s.id);
 
     const reviewStats = await this.prisma.review.groupBy({
       by: ['serviceId'],
-      _avg: {
-        rating: true,
+      where: {
+        serviceId: { in: serviceIds },
       },
-      _count: {
-        rating: true,
-      },
+      _avg: { rating: true },
+      _count: { rating: true },
     });
 
     const map = reviewStats.reduce(
@@ -123,7 +137,7 @@ export class ServicesService {
       {} as Record<number, { average: number; total: number }>,
     );
 
-    const dataRtn = services.map((service) => ({
+    let data: any = services.map((service) => ({
       ...service,
       rating: {
         average: Number((map[service.id]?.average || 0).toFixed(1)),
@@ -131,10 +145,44 @@ export class ServicesService {
       },
     }));
 
+    if (maxRating) {
+      data = data.filter((item) => item.rating.average <= Number(maxRating));
+    }
+
+    if (sort === 'rating') {
+      data.sort((a, b) =>
+        order === 'desc'
+          ? b.rating.average - a.rating.average
+          : a.rating.average - b.rating.average,
+      );
+    }
+
+    if (sort === 'review') {
+      data.sort((a, b) =>
+        order === 'desc'
+          ? b.rating.total - a.rating.total
+          : a.rating.total - b.rating.total,
+      );
+    }
+
+    if (sort === 'price') {
+      data.sort((a, b) =>
+        order === 'desc' ? b.price - a.price : a.price - b.price,
+      );
+    }
+
+    if (sort === 'createdAt') {
+      data.sort((a, b) =>
+        order === 'desc'
+          ? +new Date(b.createdAt) - +new Date(a.createdAt)
+          : +new Date(a.createdAt) - +new Date(b.createdAt),
+      );
+    }
+
     return {
       code: 0,
       message: 'SUCCESS',
-      data: dataRtn,
+      data,
     };
   }
 

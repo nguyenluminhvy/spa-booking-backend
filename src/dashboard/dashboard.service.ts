@@ -17,7 +17,7 @@ export class DashboardService {
     const range = query.range || 'day';
 
     const { currentStart, currentEnd, prevStart, prevEnd } =
-      getDateRange(range);
+      getDateRange(query);
 
     const currentAppointmentWhere = currentStart
       ? {
@@ -122,7 +122,7 @@ export class DashboardService {
         return sum + Number(item.finalPrice);
       }
 
-      return 0;
+      return sum;
     }, 0);
 
     const appointments = currentAppointments.length;
@@ -176,7 +176,7 @@ export class DashboardService {
   async revenue(query: any) {
     const range = query.range || 'day';
 
-    const { start, end } = this.getTimeRange(range);
+    const { start, end } = this.getTimeRange(query);
 
     const where = this.buildWhere(start, end, { status: 'DONE' });
 
@@ -188,15 +188,18 @@ export class DashboardService {
       },
     });
 
-    return this.handleTimeSeries(appointments, range, (item) =>
-      Number(item.finalPrice),
+    return this.handleTimeSeries(
+      appointments,
+      range,
+      (item) => Number(item.finalPrice),
+      query,
     );
   }
 
   async bookings(query: any) {
     const range = query.range || 'day';
 
-    const { start, end } = this.getTimeRange(range);
+    const { start, end } = this.getTimeRange(query);
 
     const where = this.buildWhere(start, end);
 
@@ -207,13 +210,13 @@ export class DashboardService {
       },
     });
 
-    return this.handleTimeSeries(appointments, range, () => 1);
+    return this.handleTimeSeries(appointments, range, () => 1, query);
   }
 
   async status(query: any) {
     const range = query.range || 'day';
 
-    const { start, end } = this.getTimeRange(range);
+    const { start, end } = this.getTimeRange(query);
 
     const where = this.buildWhere(start, end);
 
@@ -256,8 +259,20 @@ export class DashboardService {
     };
   }
 
-  private getTimeRange(range: string) {
+  private getTimeRange(query: any) {
     const now = moment().local();
+
+    const { range, startDate, endDate } = query;
+
+    if (startDate && endDate) {
+      const currentStart = moment(startDate).startOf('day');
+      const currentEnd = moment(endDate).endOf('day');
+
+      return {
+        start: currentStart.toDate(),
+        end: currentEnd.toDate(),
+      };
+    }
 
     switch (range) {
       case 'day':
@@ -300,7 +315,17 @@ export class DashboardService {
     appointments: any[],
     range: string,
     getValue: (item: any) => number,
+    query?: any,
   ) {
+    if (query?.startDate && query?.endDate) {
+      return this.handleCustomRangeGeneric(
+        appointments,
+        getValue,
+        query.startDate,
+        query.endDate,
+      );
+    }
+
     if (range === 'day') return this.handleDayGeneric(appointments, getValue);
     if (range === 'week') return this.handleWeekGeneric(appointments, getValue);
     if (range === 'month')
@@ -418,6 +443,108 @@ export class DashboardService {
     ];
 
     return buildFinal(labels, fullData, labels, (m) => months[m]);
+  }
+
+  private handleCustomRangeGeneric(
+    appointments: any[],
+    getValue: (item: any) => number,
+    startDate: string,
+    endDate: string,
+  ) {
+    const start = moment(startDate).startOf('day');
+    const end = moment(endDate).endOf('day');
+    const diffDays = end.diff(start, 'days') + 1;
+    const map: Record<string, number> = {};
+    const labels: string[] = [];
+
+    if (diffDays <= 7) {
+      for (let i = 0; i < diffDays; i++) {
+        const d = start.clone().add(i, 'days').format('YYYY-MM-DD');
+
+        map[d] = 0;
+
+        labels.push(d);
+      }
+
+      appointments.forEach((item) => {
+        const key = moment(item.appointmentTime).local().format('YYYY-MM-DD');
+
+        if (map[key] !== undefined) {
+          map[key] += getValue(item);
+        }
+      });
+
+      return {
+        code: 0,
+        message: 'SUCCESS',
+        data: {
+          labels: labels.map((d) => moment(d).format('DD/MM')),
+          data: labels.map((d) => map[d]),
+        },
+      };
+    }
+
+    if (diffDays <= 31) {
+      const weekMap: Record<string, number> = {};
+
+      appointments.forEach((item) => {
+        const week = moment(item.appointmentTime)
+          .local()
+          .startOf('isoWeek')
+          .format('YYYY-MM-DD');
+
+        if (!weekMap[week]) weekMap[week] = 0;
+
+        weekMap[week] += getValue(item);
+      });
+
+      const sortedWeeks = Object.keys(weekMap).sort();
+
+      return {
+        code: 0,
+        message: 'SUCCESS',
+        data: {
+          labels: sortedWeeks.map((w) => `W${moment(w).isoWeek()}`),
+          data: sortedWeeks.map((w) => weekMap[w]),
+        },
+      };
+    }
+
+    const monthMap: Record<number, number> = {};
+    appointments.forEach((item) => {
+      const m = moment(item.appointmentTime).local().month();
+      if (!monthMap[m]) monthMap[m] = 0;
+      monthMap[m] += getValue(item);
+    });
+
+    const labelsMonth = Object.keys(monthMap)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return {
+      code: 0,
+      message: 'SUCCESS',
+      data: {
+        labels: labelsMonth.map((m) => months[m]),
+        data: labelsMonth.map((m) => monthMap[m]),
+      },
+    };
   }
 
   private async getTopServices(whereCondition: any) {

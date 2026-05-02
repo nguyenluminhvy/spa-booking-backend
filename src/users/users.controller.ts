@@ -16,8 +16,8 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  findAll(@Query() body: any) {
-    return this.usersService.findAll(body);
+  findAll(@Query() query: any) {
+    return this.usersService.findAll(query);
   }
 
   @Get('staffs')
