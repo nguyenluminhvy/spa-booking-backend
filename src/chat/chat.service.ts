@@ -168,25 +168,17 @@ export class ChatService {
 
     const { userId, assignedTo } = convo;
 
-    // =========================
-    // USER gửi
-    // =========================
     if (senderId === userId) {
       const adminIds = await this.getAllAdminIds();
 
-      // đã assign → chỉ staff đó + admin
       if (assignedTo) {
         return [assignedTo, ...adminIds];
       }
 
-      // chưa assign → tất cả staff + admin
       const staffIds = await this.getAllStaffIds();
       return [...staffIds, ...adminIds];
     }
 
-    // =========================
-    // STAFF / ADMIN gửi
-    // =========================
     return [userId];
   }
 
